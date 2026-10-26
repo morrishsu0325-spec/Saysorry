@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>給公主大人的道歉信</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#ff8fb8; --pink-d:#f0609a; --pink-l:#ffe3ee;
+    --blue:#7cc8f2; --blue-l:#e3f4ff;
+    --yellow:#fff3b0; --brown:#8a5a3c; --text:#6b4a3a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:"Noto Sans TC",system-ui,sans-serif;color:var(--text);
+    /* 背景：有 bg.jpg 就用，沒有就顯示粉藍漸層 */
+    background:url("bg.jpg") center/cover no-repeat fixed,
+      radial-gradient(circle at 20% 15%,#fff 0 6%,transparent 7%),
+      radial-gradient(circle at 80% 70%,#fff 0 4%,transparent 5%),
+      linear-gradient(160deg,#ffe3ee 0%,#fff6fa 45%,#e3f4ff 100%);
+    overflow:hidden;
+  }
+  #floaties{position:fixed;inset:0;pointer-events:none;z-index:0}
+  .floaty{position:absolute;bottom:-40px;font-size:20px;opacity:.7;animation:rise linear infinite}
+  @keyframes rise{to{transform:translateY(-115vh) rotate(25deg)}}
+
+  .stage{position:relative;z-index:1;height:100%;display:flex;align-items:center;justify-content:center;padding:16px}
+  .page{
+    position:absolute;width:min(92vw,420px);max-height:92vh;overflow-y:auto;
+    background:rgba(255,255,255,.92);border-radius:32px;padding:26px 22px 22px;
+    border:4px solid #fff;box-shadow:0 10px 0 var(--pink-l),0 18px 40px rgba(240,96,154,.25);
+    text-align:center;opacity:0;transform:scale(.85) translateY(30px);pointer-events:none;
+    transition:all .5s cubic-bezier(.34,1.56,.64,1);
+  }
+  .page.show{opacity:1;transform:none;pointer-events:auto}
+  .page::before{content:"";position:absolute;inset:8px;border:2px dashed var(--pink-l);border-radius:26px;pointer-events:none}
+
+  h2{font-size:24px;font-weight:900;color:var(--pink-d);margin-bottom:6px}
+  .tag{display:inline-block;background:var(--blue-l);color:#3d9ad1;font-size:13px;font-weight:700;padding:4px 12px;border-radius:99px;margin-bottom:10px}
+  p{font-size:16px;line-height:1.85}
+  .hint{font-size:13px;color:#c99;margin-top:10px;animation:blink 1.6s infinite}
+  @keyframes blink{50%{opacity:.35}}
+
+  .chara{display:block;margin:0 auto;object-fit:contain;animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(-8px)}}
+  .fallback{font-size:64px;display:block;margin:6px auto}
+
+  .btn{
+    font-family:inherit;font-weight:900;font-size:17px;border:none;cursor:pointer;
+    background:var(--pink);color:#fff;padding:12px 28px;border-radius:99px;margin-top:16px;
+    box-shadow:0 5px 0 var(--pink-d);transition:transform .15s;
+  }
+  .btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--pink-d)}
+  .btn.blue{background:var(--blue);box-shadow:0 5px 0 #4aa6d8}
+  .btn:disabled{opacity:.4;pointer-events:none}
+
+  /* 信封 */
+  .envelope{position:relative;width:230px;height:160px;margin:20px auto 10px;cursor:pointer}
+  .env-body{position:absolute;inset:0;background:var(--pink);border-radius:14px;box-shadow:0 8px 0 var(--pink-d)}
+  .env-flap{position:absolute;left:0;right:0;top:0;height:0;border-left:115px solid transparent;border-right:115px solid transparent;border-top:95px solid #ffb3cf;transform-origin:top;transition:transform .6s;z-index:3}
+  .env-heart{position:absolute;left:50%;top:62px;transform:translateX(-50%);font-size:34px;z-index:4;animation:pulse 1s infinite}
+  @keyframes pulse{50%{transform:translateX(-50%) scale(1.2)}}
+  .envelope.open .env-flap{transform:rotateX(180deg)}
+  .envelope.open .env-heart{opacity:0}
+
+  /* 約定清單 */
+  .promise{display:flex;align-items:center;gap:10px;text-align:left;background:var(--pink-l);border-radius:16px;padding:11px 14px;margin:8px 0;cursor:pointer;font-weight:700;font-size:15px;transition:all .25s}
+  .promise .box{flex:none;width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--pink);display:grid;place-items:center;font-size:14px;color:#fff}
+  .promise.done{background:#dff6e8}
+  .promise.done .box{background:#5cc98a;border-color:#5cc98a}
+
+  /* 愛心翻牌 */
+  .hearts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+  .flip{height:84px;perspective:600px;cursor:pointer}
+  .flip-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .flip.on .flip-in{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;display:grid;place-items:center}
+  .front{background:var(--pink);font-size:34px;box-shadow:0 4px 0 var(--pink-d)}
+  .back{background:var(--yellow);transform:rotateY(180deg);font-weight:900;font-size:15px;color:var(--brown);padding:4px;line-height:1.3}
+
+  .reveal{max-height:0;overflow:hidden;opacity:0;transition:all .7s}
+  .reveal.on{max-height:600px;opacity:1}
+
+  /* 補償券 */
+  .coupon{position:relative;display:flex;align-items:center;gap:12px;margin:10px 0;padding:14px 16px;border-radius:18px;background:linear-gradient(90deg,var(--blue-l),#fff);border:3px dashed var(--blue);cursor:pointer;text-align:left}
+  .coupon .ic{font-size:30px}
+  .coupon b{display:block;font-size:17px}
+  .coupon small{color:#8aa}
+  .stamp{position:absolute;right:12px;top:50%;transform:translateY(-50%) rotate(-15deg) scale(2.5);opacity:0;border:3px solid #e5486f;color:#e5486f;font-weight:900;padding:3px 8px;border-radius:10px;font-size:14px;transition:all .35s cubic-bezier(.34,1.56,.64,1);background:rgba(255,255,255,.8)}
+  .coupon.used .stamp{opacity:1;transform:translateY(-50%) rotate(-15deg) scale(1)}
+
+  /* 原諒頁 */
+  .choices{position:relative;height:150px;margin-top:10px}
+  #yes{position:absolute;left:50%;top:10px;transform:translateX(-50%);transition:transform .3s;z-index:2}
+  #no{position:absolute;left:50%;top:84px;transform:translateX(-50%);background:#ccc;box-shadow:0 5px 0 #aaa;transition:all .25s;font-size:15px}
+
+  .dots{position:fixed;bottom:18px;left:0;right:0;display:flex;justify-content:center;gap:8px;z-index:2}
+  .dot{width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px var(--pink);transition:all .3s}
+  .dot.on{width:26px;border-radius:99px;background:var(--pink)}
+
+  .burst{position:fixed;font-size:24px;pointer-events:none;z-index:9;animation:pop 1s ease-out forwards}
+  @keyframes pop{to{transform:translate(var(--x),var(--y)) scale(.4);opacity:0}}
+  .confetti{position:fixed;top:-20px;width:10px;height:14px;z-index:9;pointer-events:none;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+  .row{display:flex;justify-content:center;align-items:flex-end;gap:6px}
+</style>
+</head>
+<body>
+<div id="floaties"></div>
+
+<div class="stage">
+
+  <!-- 0 開場信封 -->
+  <section class="page show" data-i="0">
+    <span class="tag">💌 給最愛的公主大人</span>
+    <h2>僕人有一封信要給你</h2>
+    <img class="chara" src="pom-hug.png" width="130" alt="">
+    <div class="envelope" id="env">
+      <div class="env-body"></div><div class="env-flap"></div><div class="env-heart">💗</div>
+    </div>
+    <p class="hint">點信封打開 ✨</p>
+  </section>
+
+  <!-- 1 開車道歉 -->
+  <section class="page" data-i="1">
+    <span class="tag">第一件事 🚗</span>
+    <h2>公主大人對不起</h2>
+    <img class="chara" src="kitty-sit.png" width="110" alt="">
+    <p>今天開車上班，讓我的寶貝小公主<br>嚇到好多次，也沒有遵守好我們的約定。<br>以後我知道了，要<b style="color:var(--pink-d)">以寶貝的感受為主</b>：</p>
+    <div style="margin-top:10px">
+      <div class="promise"><span class="box"></span>以寶貝的感受為第一優先</div>
+      <div class="promise"><span class="box"></span>移車、變換車道要更小心</div>
+      <div class="promise"><span class="box"></span>跟前車保持安全距離</div>
+      <div class="promise"><span class="box"></span>更專心注意行車狀況</div>
+    </div>
+    <p class="hint" id="h1">點每一項，僕人會勾選發誓 ✔️</p>
+    <button class="btn" id="b1" disabled>我發誓做到！下一頁 →</button>
+  </section>
+
+  <!-- 2 你在我心中 -->
+  <section class="page" data-i="2">
+    <span class="tag">第二件事 💗</span>
+    <h2>你在我心中是…</h2>
+    <p style="font-size:14px">點開每一顆愛心看看</p>
+    <div class="hearts">
+      <div class="flip"><div class="flip-in"><div class="face front">💗</div><div class="face back">世界上<br>最愛</div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">💖</div><div class="face back">最厲害</div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">💕</div><div class="face back">最寵</div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">💓</div><div class="face back">最尊敬</div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">💞</div><div class="face back">待在一起<br>最幸福</div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">👑</div><div class="face back">永遠的<br>第一名</div></div></div>
+    </div>
+    <div class="reveal" id="r2">
+      <p>我不應該再開任何跟這個有關的玩笑。<br>想告訴你，在我心中<br>你永遠是<b style="color:var(--pink-d)">最好、最厲害、待在一起最幸福</b>的那一個。</p>
+      <img class="chara" src="sorry1.png" width="170" alt="" style="margin-top:8px">
+      <p><b>真的很對不起，小的僕人知錯了 🙇</b></p>
+      <button class="btn" data-go="3">繼續看 →</button>
+    </div>
+  </section>
+
+  <!-- 3 補償券 -->
+  <section class="page" data-i="3">
+    <span class="tag">僕人的補償 🎟️</span>
+    <h2>公主專屬招待券</h2>
+    <p style="font-size:14px">今天在車上答應小公主的，點券蓋章兌換！</p>
+    <div class="coupon"><span class="ic">✂️</span><div><b>剪髮招待券</b><small>由僕人全額招待</small></div><span class="stamp">僕人買單</span></div>
+    <div class="coupon"><span class="ic">🫧</span><div><b>護髮招待券</b><small>由僕人全額招待</small></div><span class="stamp">僕人買單</span></div>
+    <div class="coupon"><span class="ic">🎨</span><div><b>染髮招待券</b><small>由僕人全額招待</small></div><span class="stamp">僕人買單</span></div>
+    <div class="reveal" id="r3">
+      <img class="chara" src="sorry2.png" width="180" alt="" style="margin-top:10px">
+      <p>希望寶貝可以原諒我，謝謝你 ❤️</p>
+      <button class="btn" data-go="4">最後一個問題 →</button>
+    </div>
+  </section>
+
+  <!-- 4 原諒嗎 -->
+  <section class="page" data-i="4">
+    <span class="tag">重要時刻 🥺</span>
+    <h2>公主大人<br>願意原諒僕人嗎？</h2>
+    <img class="chara" src="cinna.png" width="150" alt="">
+    <div class="choices">
+      <button class="btn" id="yes">原諒你 💗</button>
+      <button class="btn" id="no">不原諒</button>
+    </div>
+  </section>
+
+  <!-- 5 結尾 -->
+  <section class="page" data-i="5">
+    <span class="tag">🎉 公主大人原諒了 🎉</span>
+    <h2>謝謝寶貝！！</h2>
+    <div class="row">
+      <img class="chara" src="pom.png" width="100" alt="">
+      <img class="chara" src="kitty-pink.png" width="100" alt="" style="animation-delay:.4s">
+    </div>
+    <p style="margin-top:8px">僕人以後會更小心開車，<br>好好守護我的小公主 🚗💨<br>剪髮、護髮、染髮的日子<br>隨時等公主大人下令！</p>
+    <p style="margin-top:10px;font-size:20px;font-weight:900;color:var(--pink-d)">最愛你了 ❤️</p>
+    <button class="btn blue" id="again">再看一次 ↺</button>
+  </section>
+</div>
+
+<div class="dots" id="dots"></div>
+
+<script>
+const pages=[...document.querySelectorAll('.page')];
+const dotsEl=document.getElementById('dots');
+pages.forEach(()=>{const d=document.createElement('span');d.className='dot';dotsEl.appendChild(d)});
+let cur=0;
+function go(i){
+  pages[cur].classList.remove('show');cur=i;
+  setTimeout(()=>pages[cur].classList.add('show'),150);
+  [...dotsEl.children].forEach((d,k)=>d.classList.toggle('on',k===cur));
+}
+go(0);
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=e=>{burst(e);go(+b.dataset.go)});
+
+/* 圖片找不到時顯示可愛 emoji 代替 */
+const fb=['🐰','🐶','🐱','🍮','🎀'];
+document.querySelectorAll('img.chara').forEach((img,k)=>img.onerror=()=>{
+  const s=document.createElement('span');s.className='fallback';s.textContent=fb[k%fb.length];img.replaceWith(s);
+});
+
+/* 飄浮背景 */
+const fl=document.getElementById('floaties'),sym=['💗','⭐','🎀','☁️','💕','✨'];
+for(let i=0;i<14;i++){const s=document.createElement('span');s.className='floaty';
+  s.textContent=sym[i%sym.length];s.style.left=Math.random()*100+'vw';
+  s.style.animationDuration=10+Math.random()*10+'s';s.style.animationDelay=-Math.random()*20+'s';fl.appendChild(s);}
+
+function burst(e,n=10,chars=['💗','💕','✨','⭐']){
+  const x=e.clientX||innerWidth/2,y=e.clientY||innerHeight/2;
+  for(let i=0;i<n;i++){const s=document.createElement('span');s.className='burst';
+    s.textContent=chars[i%chars.length];s.style.left=x+'px';s.style.top=y+'px';
+    const a=Math.random()*Math.PI*2,r=60+Math.random()*80;
+    s.style.setProperty('--x',Math.cos(a)*r+'px');s.style.setProperty('--y',Math.sin(a)*r+'px');
+    document.body.appendChild(s);setTimeout(()=>s.remove(),1000);}
+}
+
+/* 0 信封 */
+document.getElementById('env').onclick=e=>{
+  e.currentTarget.classList.add('open');burst(e,14);setTimeout(()=>go(1),900);
+};
+
+/* 1 約定 */
+const proms=[...document.querySelectorAll('.promise')];
+proms.forEach(p=>p.onclick=e=>{
+  p.classList.toggle('done');p.querySelector('.box').textContent=p.classList.contains('done')?'✓':'';
+  if(p.classList.contains('done'))burst(e,6,['✔️','💗']);
+  const all=proms.every(x=>x.classList.contains('done'));
+  document.getElementById('b1').disabled=!all;
+  document.getElementById('h1').textContent=all?'全部發誓完成！🥹':'點每一項，僕人會勾選發誓 ✔️';
+});
+document.getElementById('b1').onclick=e=>{burst(e);go(2)};
+
+/* 2 愛心 */
+const flips=[...document.querySelectorAll('.flip')];
+flips.forEach(f=>f.onclick=e=>{
+  if(f.classList.contains('on'))return;f.classList.add('on');burst(e,8);
+  if(flips.every(x=>x.classList.contains('on')))setTimeout(()=>document.getElementById('r2').classList.add('on'),500);
+});
+
+/* 3 補償券 */
+const cps=[...document.querySelectorAll('.coupon')];
+cps.forEach(c=>c.onclick=e=>{
+  if(c.classList.contains('used'))return;c.classList.add('used');burst(e,8,['✂️','💗','✨']);
+  if(cps.every(x=>x.classList.contains('used')))setTimeout(()=>document.getElementById('r3').classList.add('on'),500);
+});
+
+/* 4 原諒 */
+const yes=document.getElementById('yes'),no=document.getElementById('no');
+let tries=0;const noTxt=['不原諒','真的嗎？🥺','再想想嘛','僕人會哭哭','拜託拜託🙏','按不到啦～'];
+function runAway(e){
+  e.preventDefault();tries++;
+  const box=no.parentElement.getBoundingClientRect();
+  const maxX=box.width-no.offsetWidth,maxY=box.height-no.offsetHeight;
+  no.style.left=Math.random()*maxX+'px';no.style.top=Math.random()*maxY+'px';no.style.transform='none';
+  no.textContent=noTxt[Math.min(tries,noTxt.length-1)];
+  no.style.fontSize=Math.max(9,15-tries)+'px';
+  yes.style.transform=`translateX(-50%) scale(${1+tries*0.15})`;
+}
+no.addEventListener('mouseenter',runAway);
+no.addEventListener('touchstart',runAway,{passive:false});
+no.addEventListener('click',runAway);
+yes.onclick=e=>{burst(e,20);confetti();go(5)};
+
+/* 5 結尾 */
+function confetti(){
+  const cs=['#ff8fb8','#7cc8f2','#fff3b0','#ffd1e3','#b8e6ff'];
+  for(let i=0;i<80;i++){const c=document.createElement('span');c.className='confetti';
+    c.style.left=Math.random()*100+'vw';c.style.background=cs[i%cs.length];
+    c.style.borderRadius=Math.random()>.5?'50%':'3px';
+    c.style.animationDuration=2+Math.random()*2+'s';c.style.animationDelay=Math.random()*.8+'s';
+    document.body.appendChild(c);setTimeout(()=>c.remove(),5000);}
+}
+document.getElementById('again').onclick=()=>{
+  document.getElementById('env').classList.remove('open');
+  proms.forEach(p=>{p.classList.remove('done');p.querySelector('.box').textContent=''});
+  document.getElementById('b1').disabled=true;
+  flips.forEach(f=>f.classList.remove('on'));cps.forEach(c=>c.classList.remove('used'));
+  document.getElementById('r2').classList.remove('on');document.getElementById('r3').classList.remove('on');
+  tries=0;no.removeAttribute('style');no.textContent='不原諒';yes.style.transform='';
+  go(0);
+};
+</script>
+</body>
+</html>
