@@ -16,10 +16,13 @@
   body{
     font-family:"Noto Sans TC",system-ui,sans-serif;color:var(--text);
     /* 背景：有 bg.jpg 就用，沒有就顯示粉藍漸層 */
-    background:url("bg.jpg") center/cover no-repeat fixed,
-      radial-gradient(circle at 20% 15%,#fff 0 6%,transparent 7%),
-      radial-gradient(circle at 80% 70%,#fff 0 4%,transparent 5%),
-      linear-gradient(160deg,#ffe3ee 0%,#fff6fa 45%,#e3f4ff 100%);
+    background-color:#cfe9ff;
+    background-image:url("bg.jpg"),
+      linear-gradient(90deg,rgba(255,200,222,.55) 50%,transparent 50%),
+      linear-gradient(0deg,rgba(255,200,222,.55) 50%,transparent 50%);
+    background-size:cover,44px 44px,44px 44px;
+    background-position:center,0 0,0 0;
+    background-attachment:fixed,fixed,fixed;
     overflow:hidden;
   }
   #floaties{position:fixed;inset:0;pointer-events:none;z-index:0}
@@ -92,9 +95,9 @@
   .coupon.used .stamp{opacity:1;transform:translateY(-50%) rotate(-15deg) scale(1)}
 
   /* 原諒頁 */
-  .choices{position:relative;height:150px;margin-top:10px}
-  #yes{position:absolute;left:50%;top:10px;transform:translateX(-50%);transition:transform .3s;z-index:2}
-  #no{position:absolute;left:50%;top:84px;transform:translateX(-50%);background:#ccc;box-shadow:0 5px 0 #aaa;transition:all .25s;font-size:15px}
+  .choices{position:relative;height:200px;margin-top:10px}
+  #yes{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);transform-origin:bottom center;transition:transform .3s;z-index:2}
+  #no{position:absolute;left:50%;top:0;transform:translateX(-50%);background:#ccc;box-shadow:0 5px 0 #aaa;transition:all .25s;font-size:15px;z-index:5;white-space:nowrap}
 
   .dots{position:fixed;bottom:18px;left:0;right:0;display:flex;justify-content:center;gap:8px;z-index:2}
   .dot{width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px var(--pink);transition:all .3s}
@@ -129,7 +132,7 @@
     <span class="tag">第一件事 🚗</span>
     <h2>公主大人對不起</h2>
     <img class="chara" src="kitty-sit.png" width="110" alt="">
-    <p>今天開車上班，讓我的寶貝小公主<br>嚇到好多次，也沒有遵守好我們的約定。<br>以後我知道了，要<b style="color:var(--pink-d)">以寶貝的感受為主</b>：</p>
+    <p>今天開車的時候，讓我的寶貝小公主<br>嚇到好多次，也沒有遵守好我們的約定。<br>以後我知道了，要<b style="color:var(--pink-d)">以寶貝的感受為主</b>：</p>
     <div style="margin-top:10px">
       <div class="promise"><span class="box"></span>以寶貝的感受為第一優先</div>
       <div class="promise"><span class="box"></span>移車、變換車道要更小心</div>
@@ -217,7 +220,7 @@ go(0);
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=e=>{burst(e);go(+b.dataset.go)});
 
 /* 圖片找不到時顯示可愛 emoji 代替 */
-const fb=['🐰','🐶','🐱','🍮','🎀'];
+const fb=['👸'];
 document.querySelectorAll('img.chara').forEach((img,k)=>img.onerror=()=>{
   const s=document.createElement('span');s.className='fallback';s.textContent=fb[k%fb.length];img.replaceWith(s);
 });
@@ -273,11 +276,12 @@ let tries=0;const noTxt=['不原諒','真的嗎？🥺','再想想嘛','僕人�
 function runAway(e){
   e.preventDefault();tries++;
   const box=no.parentElement.getBoundingClientRect();
-  const maxX=box.width-no.offsetWidth,maxY=box.height-no.offsetHeight;
-  no.style.left=Math.random()*maxX+'px';no.style.top=Math.random()*maxY+'px';no.style.transform='none';
   no.textContent=noTxt[Math.min(tries,noTxt.length-1)];
-  no.style.fontSize=Math.max(9,15-tries)+'px';
-  yes.style.transform=`translateX(-50%) scale(${1+tries*0.15})`;
+  no.style.fontSize=Math.max(10,15-tries)+'px';
+  const maxX=Math.max(0,box.width-no.offsetWidth);
+  const maxY=Math.max(0,box.height-yes.offsetHeight*1.6-no.offsetHeight-14);
+  no.style.left=Math.random()*maxX+'px';no.style.top=Math.random()*maxY+'px';no.style.transform='none';
+  yes.style.transform=`translateX(-50%) scale(${Math.min(1.5,1+tries*0.1)})`;
 }
 no.addEventListener('mouseenter',runAway);
 no.addEventListener('touchstart',runAway,{passive:false});
